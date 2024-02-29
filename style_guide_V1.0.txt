@@ -1,0 +1,46 @@
+Style Guide V1.0
+
+Python
+General Formatting:
+  Use 4 "spaces/whitespace" for indentation not "tabs"
+
+  Use "" not '' for strings
+    "Hello World" vs 'Hello World'
+
+  Make varible names descriptive but within reason
+    i.e startTime, endTime vs t1,t2
+
+  Camel case for Varibles and Functions. Function Start Capitilized, Varibles start lowercase
+    startTime = 12
+    ComplexCalcFunct(x,y,z)
+  Allcaps for classes
+    class DATASTORAGE:
+        class body  
+    
+Comment Stuctures:
+  At the start of functions
+    # What the function does and what it returns 
+    # Description of the varibles
+    # Last person to modify the function
+    # Last person's changes
+    def complexCalcFunct(x,y,z):
+        do something
+
+  Add comments for complicated bits of math and logic
+  Even if it seems simple for you add a comment
+    # ComplexCalcFunct does magic math
+    this = ComplexCalcFunct(x,y,z)
+    if (this is that)
+        #"that is this" and "this and that" are not comunicative so IDK
+        if (that is this)
+        {
+             do something
+        }
+
+Practices:
+  Isolate tasks into their own .py file and then import them into main .py when neaded.
+  
+  Always check in other source files if the function you're programming already exists, if so use that one.
+  
+  Try to use switch statments rather than if-else blocks if you're checking for equality, this is mainly for read
+  ablity.
