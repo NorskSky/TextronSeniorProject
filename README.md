@@ -1,6 +1,6 @@
 This reposistory contains the GUI and analsys code for the "GMA36 Tester" senior design project at UND.
 Contributers:
-    Robert Boekhaut
+    Robert Boekhout
     Rhett Vail Castro
     Jacob Monson
 
