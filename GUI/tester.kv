@@ -1,13 +1,35 @@
-#:kivy 3.12.1
-
-<MAINWINDOW>:
+#:kivy 2.3.0
+<MainWindowButton@Button>:
+    font_size: 18
+    font_style: 'ariel' 
+    background_normal: ''
+   
+<MAINWINDOW>: 
     canvas:
-        Rectangle:
-        pos: self.center_x -, 0
-        size: 10, self.height
-    Label:
-        font_size: 70
-        font_style: "ariel"
-        center_x: root.width / 4
-        top: root.top - 50
-        text: "Hello World" 
+        Color: 
+            rgba: 0.2471, 0.5333, 0.7726, 1
+        Rectangle: 
+            size: 800, 480
+               
+   
+    MainWindowButton:
+        text: "Start Test"
+        background_color: 0.0745, 0.4353, 0.3882, 1
+        Image:
+            source: '.\GUI_Icons\Test_icon.png'
+            y: self.parent.y + 60        
+            x: self.parent.x + 142.5
+            color: 0.0745, 0.4353, 0.3882, 0.2500
+    
+        
+    MainWindowButton:
+        text: "Export"
+        background_color: 1.0000, 0.7294, 0.0314, 1
+    MainWindowButton:
+        text: "Test Settings"
+        background_color: 0.0118, 0.1686, 0.2627, 1
+    MainWindowButton:
+        text: "Power Off"
+        background_color: 0.8157, 0.0000, 0.0000, 1
+    
+    
