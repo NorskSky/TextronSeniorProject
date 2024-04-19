@@ -1,33 +1,42 @@
 import kivy
+import os
+
+#Loads the config file
+from kivy.config import Config
+Config.read("screen_config.cfg")
 
 from kivy.app import App
-from kivy.uix.widget import Widget
 from kivy.lang.builder import Builder
 from kivy.config import Config
-from kivy.uix.gridlayout import GridLayout
-
-
-Config.set('graphics', 'resizable', '0') 
-# fix the width of the window 
-Config.set('graphics', 'width', '800') 
-# fix the height of the window 
-Config.set('graphics', 'height', '480')
-
-class MAINWINDOW(GridLayout):
-    def __init__(self, **kwargs):
-        super(MAINWINDOW, self).__init__(**kwargs)
-        self.cols = 2
-        self.rows = 2    
-        self.padding = [10, 10]   
-        self.spacing = [10, 10]
-
+from kivy.uix.screenmanager import ScreenManager, Screen
 
 
 Builder.load_file("tester.kv")
 
-class TESTERGUI(App):
+class MENUSCREEN(Screen):
+    pass
+
+
+class SETTINGSSCREEN(Screen):
+    pass
+
+class TESTERGUI(App):    
+    sm = ScreenManager()
+    #Defines the Behavior when the Start Test button is pressed
+    #This button is located with in the 'menu' screen
+    def startTest(self, text):
+        print(text) 
+    
+    #Defines the Behavior when the Export button is pressed
+    #This button is located with in the 'menu' screen
+    def export(self, text):
+        print(text)
+    
+        
     def build(self):        
-        return MAINWINDOW()
+        self.sm.add_widget(MENUSCREEN(name = 'menu'))   
+        self.sm.add_widget(SETTINGSSCREEN(name = 'settings'))             
+        return self.sm
     
 if __name__ == '__main__':
     TESTERGUI().run()

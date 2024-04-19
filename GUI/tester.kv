@@ -1,35 +1,192 @@
 #:kivy 2.3.0
+#:import os os
+#:set STEELBLUE (0.2471, 0.5333, 0.7726, 1)
+#:set PINEGREEN (0.0745, 0.4353, 0.3882, 1)
+#:set ENGORANGE (0.8157, 0.0000, 0.0000, 1)
+#:set SELYELLOW (1.0000, 0.7294, 0.0314, 1)
+#:set PRUSSBLUE (0.0118, 0.1686, 0.2627, 1)
+#:set INPUTS ('Input 1', 'Input 2', 'Input 3', 'Input 4', 'Input 5', 'Input 6', 'Input 7', 'Input 8')
+
+
+<InputSelction@Spinner>: 
+    size_hint: None, None
+    size: 100, 44  
+    values: INPUTS
+    on_text:
+        print("The spinner {} has text {}".format(self, self.text))
+        
 <MainWindowButton@Button>:
     font_size: 18
     font_style: 'ariel' 
     background_normal: ''
-   
-<MAINWINDOW>: 
-    canvas:
-        Color: 
-            rgba: 0.2471, 0.5333, 0.7726, 1
-        Rectangle: 
-            size: 800, 480
-               
-   
-    MainWindowButton:
-        text: "Start Test"
-        background_color: 0.0745, 0.4353, 0.3882, 1
-        Image:
-            source: '.\GUI_Icons\Test_icon.png'
-            y: self.parent.y + 60        
-            x: self.parent.x + 142.5
-            color: 0.0745, 0.4353, 0.3882, 0.2500
     
+   
+<MENUSCREEN>: 
+    #makes the background color the proper shade
+    GridLayout:
+        cols: 2
+        rows: 2
+        padding: 10, 10
+        spacing: 10, 10 
+        canvas:
+            Color: 
+                rgba: STEELBLUE
+            Rectangle: 
+                size: 800, 480
         
-    MainWindowButton:
-        text: "Export"
-        background_color: 1.0000, 0.7294, 0.0314, 1
-    MainWindowButton:
-        text: "Test Settings"
-        background_color: 0.0118, 0.1686, 0.2627, 1
-    MainWindowButton:
-        text: "Power Off"
-        background_color: 0.8157, 0.0000, 0.0000, 1
+        
+        #Defines the start button look and Behavior
+        MainWindowButton:
+            id: startBt
+            text: "Start Test"
+            background_color: PINEGREEN
+            on_press: app.startTest("Start Test Pressed") #print("start test")
+            Image:
+                source: './GUI_Icons/Test_icon.png'
+                y: self.parent.y + 20       
+                x: self.parent.x + 100
+                fit_mode: "fill"
+                size: 185, 185           
+                color: 0.0745, 0.4353, 0.3882, 0.2500       
+            
+                
+        #Defines the export button look and Behavior   
+        MainWindowButton:
+            id: exportBt
+            text: "Export"
+            background_color: SELYELLOW
+            on_press: app.export("Export Pressed")
+            Image:
+                source: './GUI_Icons/Export_icon.png'
+                y: self.parent.y + 20       
+                x: self.parent.x + 100
+                fit_mode: "fill"
+                size: 185, 185           
+                color: 1.0000, 0.7294, 0.0314, 0.2500
+
+        #Defines Test Settings button look and Behavior
+        #Sends user back to Settings Screen
+        MainWindowButton:
+            id: testStBt
+            text: "Test Settings"
+            on_press: app.sm.current = 'settings'
+            background_color: PRUSSBLUE
+            Image:
+                source: './GUI_Icons/Test_settings_icon.png'
+                y: self.parent.y + 20       
+                x: self.parent.x + 100
+                fit_mode: "fill"
+                size: 185, 185           
+                color: 0.0118, 0.1686, 0.2627, 0.2500
+       
+        #Defines Power button look and Behavior
+        #Powers down the device
+        MainWindowButton:
+            id: pwrBt
+            text: "Power Off"
+            background_color: ENGORANGE
+            #commented out to prevent acidental shut downs while testing
+            #on_press: os.system("shutdown /s /t 1") 
+            Image:
+                source: './GUI_Icons/Power_icon.png'
+                y: self.parent.y + 20       
+                x: self.parent.x + 100
+                fit_mode: "fill"
+                size: 185, 185           
+                color: 0.8157, 0.0000, 0.0000, 0.2500
+<SETTINGSSCREEN>:
+    FloatLayout:        
+        cols: 10
+        rows: 10
+        #Sets screen bakcground color
+        canvas:
+            Color: 
+                rgba: STEELBLUE
+            Rectangle: 
+                size: 800, 480        
+            
+        #Defines back button look and behavior
+        #Sends user back to Main menu
+        Button:
+            text: "Back"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: ENGORANGE
+            size_hint: 0.30, 0.125
+            pos: 10, 10
+            
+            on_press: app.sm.current = 'menu'
+        
+        #Defines save button looks and behavior.
+        #Saves user defined thresholds for each 
+        #input to be tested and which inputs are 
+        #to be tested
+        Button:
+            text: "Save"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: PINEGREEN
+            size_hint: 0.30, 0.125
+            pos: 550, 10
+            
+            on_press: app.sm.current = 'menu'
+        
+        #Defines import button looks and behavior.
+        #Allows user to use a known working GMA36 to
+        #to set thesholds for next test.  
+        #DOES NOT SET INPUTS
+        Button:
+            text: "Import"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: SELYELLOW
+            size_hint: 0.30, 0.125
+            pos: 280, 10
+            
+            on_press: app.sm.current = 'menu'
+                
+        InputSelction:                       
+            pos: 10, 426
+            text: 'Input 1' 
+
+        InputSelction:                       
+            pos: 10, 372
+            text: 'Input 2'
+
+        InputSelction:                       
+            pos: 10, 318
+            text: 'Input 3' 
+
+        InputSelction:                       
+            pos: 10, 264
+            text: 'Input 4' 
+
+        InputSelction:                       
+            pos: 420, 426
+            text: 'Input 5'
+
+        InputSelction:                       
+            pos: 420, 372
+            text: 'Input 6' 
+
+        InputSelction:                       
+            pos: 420, 318
+            text: 'Input 7' 
+
+        InputSelction:                       
+            pos: 420, 264
+            text: 'Input 8'             
+        
+        
+             
+        
+
+
+
+
+
     
     
