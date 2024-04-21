@@ -5,7 +5,7 @@ from pydub.playback import play
 import ADS1256
 import RPi.GPIO as GPIO
 import errorHandler
-
+import inputSelection
 
 #define linear sweep function
 def linearSweep():
@@ -48,6 +48,11 @@ def adcRead():
         GPIO.cleanup()
         print ("\r\nProgram end     ")
         exit()
+
+#Select Input and Print Current Baseline
+inputSelection.inputSelection()
+
+
 
 # create two new threads
 t1 = Thread(target=linearSweep)
