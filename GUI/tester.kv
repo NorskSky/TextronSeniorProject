@@ -5,15 +5,23 @@
 #:set ENGORANGE (0.8157, 0.0000, 0.0000, 1)
 #:set SELYELLOW (1.0000, 0.7294, 0.0314, 1)
 #:set PRUSSBLUE (0.0118, 0.1686, 0.2627, 1)
-#:set INPUTS ('Input 1', 'Input 2', 'Input 3', 'Input 4', 'Input 5', 'Input 6', 'Input 7', 'Input 8')
+#:set INPUTS ('GMA Output 1', 'GMA Output 2', 'GMA Output 3', 'GMA Output 4', 'GMA Output 5', 'GMA Output 6', 'GMA Output 7', 'GMA Outputt 8')
 
 
 <InputSelction@Spinner>: 
     size_hint: None, None
     size: 100, 44  
     values: INPUTS
-    on_text:
-        print("The spinner {} has text {}".format(self, self.text))
+    on_text: print("The spinner {} has text {}".format(self, self.text))
+
+<ThreshHoldInput@TextInput>:
+    multiline: False
+    hint_text:'Enter Pass Threshold'    
+    size_hint: None, None
+    size: 150, 44
+    input_filter: 'float'
+    
+
         
 <MainWindowButton@Button>:
     font_size: 18
@@ -147,38 +155,81 @@
             pos: 280, 10
             
             on_press: app.sm.current = 'menu'
-                
+
+        Spinner:                       
+            id: dropdown_9
+            size_hint: None, None
+            size: 100, 44  
+            values: ('GMA Input 1', 'GMA Input 2', 'GMA Input 3', 'GMA Input 4')
+            text: 'GMA Input 1'
+            on_text: print("The spinner {} has text {}".format(self, self.text))
+            pos: 10, 156 
+
         InputSelction:                       
+            id: dropdown_1
             pos: 10, 426
-            text: 'Input 1' 
+            text: 'GMA Output 1' 
 
         InputSelction:                       
+            id: dropdown_2
             pos: 10, 372
-            text: 'Input 2'
+            text: 'GMA Output 2'
 
         InputSelction:                       
+            id: dropdown_3
             pos: 10, 318
-            text: 'Input 3' 
+            text: 'GMA Output 3' 
 
         InputSelction:                       
+            id: dropdown_4
             pos: 10, 264
-            text: 'Input 4' 
+            text: 'GMA Output 4' 
 
         InputSelction:                       
+            id: dropdown_5
             pos: 420, 426
-            text: 'Input 5'
+            text: 'GMA Output 5'
 
         InputSelction:                       
+            id: dropdown_6
             pos: 420, 372
-            text: 'Input 6' 
+            text: 'GMA Output 6' 
 
         InputSelction:                       
+            id: dropdown_7
             pos: 420, 318
-            text: 'Input 7' 
+            text: 'GMA Output 7' 
 
         InputSelction:                       
+            id: dropdown_8
             pos: 420, 264
-            text: 'Input 8'             
+            text: 'GMA Output 8'    
+
+        ThreshHoldInput:   
+            id: threshHoldInput_1
+            pos: 120, 426
+        ThreshHoldInput:   
+            id: threshHoldInput_2
+            pos: 120, 372     
+        ThreshHoldInput:   
+            id: threshHoldInput_3
+            pos: 120, 318    
+        ThreshHoldInput:   
+            id: threshHoldInput_4
+            pos: 120, 264     
+        ThreshHoldInput:   
+            id: threshHoldInput_5
+            pos: 530, 426     
+        ThreshHoldInput:   
+            id: threshHoldInput_6
+            pos: 530, 372     
+        ThreshHoldInput:   
+            id: threshHoldInput_7
+            pos: 530, 318     
+        ThreshHoldInput:   
+            id: threshHoldInput_8
+            pos: 530, 264          
+            
         
         
              
