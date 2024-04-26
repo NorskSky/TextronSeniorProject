@@ -81,6 +81,8 @@ class TESTERGUI(App):
         myThread = threading.Thread(target = self.wasteTime)
         myThread.start()    
         #still working on showing the loading screen synchoroly while doing something else   
+        #https://stackoverflow.com/questions/30595908/building-a-simple-progress-bar-or-loading-animation-in-kivy
+        #Try looking at this
         while self.isDone < 0:
            pass
         self.sm.current = 'menu'
