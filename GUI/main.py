@@ -1,5 +1,7 @@
+from kivy.uix.accordion import Widget
+from kivy.uix.accordion import Animation
 import kivy
-import os
+import queue, threading, random,time,os
 
 #Loads the config file
 from kivy.config import Config
@@ -9,6 +11,8 @@ from kivy.app import App
 from kivy.lang.builder import Builder
 from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.animation import Animation
+from kivy.properties import NumericProperty
 
 
 #Builder.load_file("tester.kv")
@@ -16,6 +20,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 #Loads the kv files, that dictate look, feel, and behavior of the GUI 
 Builder.load_file("menu.kv")
 Builder.load_file("settings.kv")
+Builder.load_file("loading.kv")
 
 class MENUSCREEN(Screen):
     pass
@@ -27,9 +32,27 @@ class SETTINGSSCREEN(Screen):
 class RESULTSSCREEN(Screen):
     pass
 
+class LOADINGSCREEN(Screen):    
+    pass
+
+class SPINRECTANGLE(Widget):
+    angle = NumericProperty(0)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        anim = Animation(angle = -360, duration=2) 
+        anim += Animation(angle = -360, duration=2)
+        anim.repeat = True
+        anim.start(self)
+    def on_angle(self, item, angle):
+        if angle == -360:
+            item.angle = 0
+   
+    
+
 class TESTERGUI(App):    
     sm = ScreenManager()
-    
+    sineWavePt = list()
+    isDone = -1
     
     #Data used in the .kv files for color and other uses
     INPUTS = ('GMA Output 1', 'GMA Output 2', 'GMA Output 3', 'GMA Output 4', 'GMA Output 5', 'GMA Output 6', 'GMA Output 7', 'GMA Output 8')
@@ -39,11 +62,32 @@ class TESTERGUI(App):
     SELYELLOW = (1.0000, 0.7294, 0.0314, 1)
     PRUSSBLUE = (0.0118, 0.1686, 0.2627, 1)
     Thresholds = list()
-    
+   
+   
+    def wasteTime(self):
+        thistime = time.time() 
+        while thistime + 5 > time.time(): # 5 seconds
+            time.sleep(1)
+        self.isDone = 1
+        print("time wasting done")
+        pass
+            
+         
     #Defines the Behavior when the Start Test button is pressed
     #This button is located with in the 'menu' screen
     def startTest(self, text):
-        print(text) 
+        self.sm.current = 'loading'
+        print(text)
+        myThread = threading.Thread(target = self.wasteTime)
+        myThread.start()    
+        #still working on showing the loading screen synchoroly while doing something else   
+        while self.isDone < 0:
+           pass
+        self.sm.current = 'menu'
+    
+    def switchLoading(self):
+        self.sm.current = 'loading'
+           
     
     #Defines the Behavior when the Export button is pressed
     #This button is located with in the 'menu' screen
@@ -63,9 +107,10 @@ class TESTERGUI(App):
             print(i)       
         self.sm.current = 'menu'
         
-    def build(self):        
+    def build(self):          
         self.sm.add_widget(MENUSCREEN(name = 'menu'))   
-        self.sm.add_widget(SETTINGSSCREEN(name = 'settings'))                 
+        self.sm.add_widget(SETTINGSSCREEN(name = 'settings'))     
+        self.sm.add_widget(LOADINGSCREEN(name = 'loading'))            
         return self.sm
     
 if __name__ == '__main__':

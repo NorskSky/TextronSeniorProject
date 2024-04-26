@@ -1,0 +1,32 @@
+#:kivy 2.3.0
+
+<LOADINGSCREEN>:
+    ScatterLayout:        
+        canvas.before:
+            Color: 
+                rgba: app.STEELBLUE
+            Rectangle:                 
+                size: 800, 480      
+            
+        SPINRECTANGLE:
+            x: 350
+            y: 190            
+                
+            canvas.before:                                                                                                                                             
+                PushMatrix                                                                                                                                                   
+                Rotate:                                                                                                                                          
+                    angle: self.angle   
+                    axis: (0, 0, 1)                                                                                                                
+                    origin: root.center
+            canvas.after:                                                                                                                                              
+                PopMatrix 
+        
+<SPINRECTANGLE>:   
+    canvas:
+        Color:
+            rgba: app.ENGORANGE         
+        Rectangle: 
+            pos: self.pos
+            size: 100, 100                                                                                                                               
+    
+
