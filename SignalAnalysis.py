@@ -7,9 +7,6 @@ import RPi.GPIO as GPIO
 import errorHandler
 import inputSelection
 
-linSweepMp3 = AudioSegment.from_mp3("sinesweep/16Hz-20kHz-Lin-CA-10sec.mp3")
-duration = int(linSweepMp3.duration_seconds)
-t_end = time() + 40
 
 #Select input of GMA to be tested
 GMAinputData = inputSelection.GMAInputSelection()
