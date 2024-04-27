@@ -13,7 +13,9 @@ from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.animation import Animation
 from kivy.properties import NumericProperty
-
+from kivy.properties import ObjectProperty
+from kivy.uix.popup import Popup
+from kivy.factory import Factory
 
 #Builder.load_file("tester.kv")
 
@@ -32,7 +34,7 @@ class SETTINGSSCREEN(Screen):
 class RESULTSSCREEN(Screen):
     pass
 
-class LOADINGSCREEN(Screen):    
+class LOADING(Popup):    
     pass
 
 class SPINRECTANGLE(Widget):
@@ -46,7 +48,20 @@ class SPINRECTANGLE(Widget):
     def on_angle(self, item, angle):
         if angle == -360:
             item.angle = 0
-   
+
+class SPINRECTANGLE2(Widget):
+    angle = NumericProperty(0)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        anim = Animation(angle = -360, duration=2) 
+        anim += Animation(angle = -360, duration=2)
+        anim.repeat = True
+        anim.start(self)
+    def on_angle(self, item, angle):
+        if angle == -360:
+            item.angle = 0
+
+  
     
 
 class TESTERGUI(App):    
@@ -65,30 +80,32 @@ class TESTERGUI(App):
    
    
     def wasteTime(self):
-        thistime = time.time() 
+        thistime = time.time()         
         while thistime + 5 > time.time(): # 5 seconds
             time.sleep(1)
         self.isDone = 1
         print("time wasting done")
-        pass
-            
-         
+        self.pop_up.dismiss()
+        
+    
+    
+    def showLoading(self):       
+        self.pop_up = Factory.LOADING()        
+        self.pop_up.open()
+        
     #Defines the Behavior when the Start Test button is pressed
     #This button is located with in the 'menu' screen
     def startTest(self, text):
-        self.sm.current = 'loading'
         print(text)
-        myThread = threading.Thread(target = self.wasteTime)
-        myThread.start()    
-        #still working on showing the loading screen synchoroly while doing something else   
-        #https://stackoverflow.com/questions/30595908/building-a-simple-progress-bar-or-loading-animation-in-kivy
-        #Try looking at this
-        while self.isDone < 0:
-           pass
-        self.sm.current = 'menu'
+        self.showLoading()
+        mythread = threading.Thread(target=self.wasteTime)
+        mythread.start()
+        
     
-    def switchLoading(self):
-        self.sm.current = 'loading'
+    def switchResults(self,otherThread):
+        otherThread.join()
+        print("Back to menu")
+        self.sm.current = 'menu'
            
     
     #Defines the Behavior when the Export button is pressed
@@ -112,7 +129,7 @@ class TESTERGUI(App):
     def build(self):          
         self.sm.add_widget(MENUSCREEN(name = 'menu'))   
         self.sm.add_widget(SETTINGSSCREEN(name = 'settings'))     
-        self.sm.add_widget(LOADINGSCREEN(name = 'loading'))            
+        #self.sm.add_widget(LOADINGSCREEN(name = 'loading'))            
         return self.sm
     
 if __name__ == '__main__':
