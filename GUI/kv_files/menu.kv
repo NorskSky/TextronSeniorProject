@@ -17,7 +17,7 @@
         spacing: 10, 10 
         canvas:
             Color: 
-                rgba: app.STEELBLUE
+                rgba: app.colors.STEELBLUE
             Rectangle: 
                 size: 800, 480
         
@@ -26,7 +26,7 @@
         MainWindowButton:
             id: startBt
             text: "Start Test"
-            background_color: app.PINEGREEN
+            background_color: app.colors.PINEGREEN
             on_press: app.startTest("Start Test Pressed") #print("start test")
             Image:
                 source: './GUI_Icons/Test_icon.png'
@@ -41,7 +41,7 @@
         MainWindowButton:
             id: exportBt
             text: "Export"
-            background_color: app.SELYELLOW
+            background_color: app.colors.SELYELLOW
             on_press: app.export("Export Pressed")
             Image:
                 source: './GUI_Icons/Export_icon.png'
@@ -57,7 +57,7 @@
             id: testStBt
             text: "Test Settings"
             on_press: app.sm.current = 'settings'
-            background_color: app.PRUSSBLUE
+            background_color: app.colors.PRUSSBLUE
             Image:
                 source: './GUI_Icons/Test_settings_icon.png'
                 y: self.parent.y + 20       
@@ -71,7 +71,7 @@
         MainWindowButton:
             id: pwrBt
             text: "Power Off"
-            background_color: app.ENGORANGE
+            background_color: app.colors.ENGORANGE
             #commented out to prevent acidental shut downs while testing
             #on_press: os.system("shutdown /s /t 1") 
             Image:

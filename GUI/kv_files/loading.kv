@@ -3,12 +3,12 @@
 <LOADING>:
     pop_up_text: 'Doing things'
     size_hint: .5, .5
-    auto_dismiss: True
+    auto_dismiss: False
     title: 'Status'
     RelativeLayout:        
         canvas.before:
             Color: 
-                rgba: app.STEELBLUE
+                rgba: app.colors.STEELBLUE
             Rectangle:                 
                 size: 400, 240     
             
@@ -40,7 +40,7 @@
 <SPINRECTANGLE>:   
     canvas:
         Color:
-            rgba: app.ENGORANGE                  
+            rgba: app.colors.ENGORANGE                  
         Rectangle: 
             pos: self.pos
             size: 100, 100    
@@ -48,7 +48,7 @@
 <SPINRECTANGLE2>:   
     canvas: 
         Color:
-            rgba: app.STEELBLUE               
+            rgba: app.colors.STEELBLUE               
         Rectangle: 
             pos: self.pos
             size: 60, 60    

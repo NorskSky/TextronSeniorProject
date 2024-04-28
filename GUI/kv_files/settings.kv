@@ -7,6 +7,7 @@
     size: 100, 44  
     values: app.INPUTS
     on_text: print("The spinner {} has text {}".format(self, self.text))
+    text: "Not Selected"
 
 <ThresholdInput@TextInput>:
     multiline: False
@@ -15,14 +16,14 @@
     size: 180, 44
     input_filter: 'float'
 
-<SETTINGSSCREEN>:    
+<SETTINGSSCREEN>:     
     FloatLayout:        
         cols: 10
         rows: 10
-        #Sets screen bakcground color
+        #Sets screen background color
         canvas:
             Color: 
-                rgba: app.STEELBLUE
+                rgba: app.colors.STEELBLUE
             Rectangle: 
                 size: 800, 480        
             
@@ -33,7 +34,7 @@
             font_size: 18
             font_style: 'ariel'
             background_normal: ''           
-            background_color: app.ENGORANGE
+            background_color: app.colors.ENGORANGE
             size_hint: 0.30, 0.125
             pos: 10, 10
             
@@ -48,7 +49,7 @@
             font_size: 18
             font_style: 'ariel'
             background_normal: ''           
-            background_color: app.PINEGREEN
+            background_color: app.colors.PINEGREEN
             size_hint: 0.30, 0.125
             pos: 550, 10
             
@@ -63,7 +64,7 @@
             font_size: 18
             font_style: 'ariel'
             background_normal: ''           
-            background_color: app.SELYELLOW
+            background_color: app.colors.SELYELLOW
             size_hint: 0.30, 0.125
             pos: 280, 10
             
@@ -81,42 +82,42 @@
         InputSelction:                       
             id: dropdown_1
             pos: 10, 426
-            text: 'GMA Output 1' 
+            
 
         InputSelction:                       
             id: dropdown_2
             pos: 10, 372
-            text: 'GMA Output 2'
+            
 
         InputSelction:                       
             id: dropdown_3
             pos: 10, 318
-            text: 'GMA Output 3' 
+            
 
         InputSelction:                       
             id: dropdown_4
             pos: 10, 264
-            text: 'GMA Output 4' 
+             
 
         InputSelction:                       
             id: dropdown_5
             pos: 420, 426
-            text: 'GMA Output 5'
+            
 
         InputSelction:                       
             id: dropdown_6
             pos: 420, 372
-            text: 'GMA Output 6' 
+            
 
         InputSelction:                       
             id: dropdown_7
             pos: 420, 318
-            text: 'GMA Output 7' 
+            
 
         InputSelction:                       
             id: dropdown_8
             pos: 420, 264
-            text: 'GMA Output 8'    
+               
 
         ThresholdInput:   
             id: thresholdInput_1

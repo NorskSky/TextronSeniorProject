@@ -1,0 +1,97 @@
+#:kivy 2.3.0
+<OutputTested@Label>
+    font_size: 18
+    font_style: 'ariel'
+    text_size: 250, 20
+    color: 0, 0 , 0, 0
+    halign: 'left'
+    x: -240
+    bold: True
+    underline: True
+    text: "Not Selected |"
+
+<RESULTSSCREEN>:
+    RelativeLayout: 
+        #Sets screen background color
+        canvas.before:
+            Color: 
+                rgba: app.colors.STEELBLUE
+            Rectangle: 
+                size: 800, 480 
+        canvas:
+            Color:
+                rgba: app.colors.WHITE
+            Rectangle:                
+                size: 760, 360 
+                pos: 20, 100 
+        #Defines Discard button look and behavior
+        #Sends user back to Main menu
+        Button:
+            text: "Discard"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: app.colors.ENGORANGE
+            size_hint: 0.30, 0.125
+            pos: 10, 10
+            
+            on_press: app.sm.current = 'menu'
+        
+        #Defines save button looks and behavior.
+        #Saves user defined thresholds for each 
+        #input to be tested and which inputs are 
+        #to be tested
+        Button:
+            text: "Save"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: app.colors.PINEGREEN
+            size_hint: 0.30, 0.125
+            pos: 550, 10
+            
+            on_press: print("saved results")
+        
+        OutputTested: 
+            id:Output1
+            y: 200
+                             
+            
+        OutputTested: 
+            id:Output2
+            y: 170
+                                    
+            
+        OutputTested: 
+            id:Output3
+            y: 140
+                                    
+            
+        OutputTested: 
+            id:Output4
+            y: 110
+                                    
+            
+        OutputTested: 
+            id:Output5
+            y: 80
+                                 
+            
+        OutputTested: 
+            id:Output6
+            y: 50
+                                  
+            
+        OutputTested: 
+            id:Output7
+            y: 20
+                                
+            
+        OutputTested: 
+            id:Output8
+            y: -10
+                                 
+            
+
+
+        
