@@ -1,5 +1,5 @@
 import kivy
-import threading, time
+import threading, time, random
 #from pathlib import Path, PurePath
 
 #Loads the config file
@@ -49,16 +49,39 @@ class RESULTSSCREEN(Screen):
         self.Outputs[6] = self.ids.Output7
         self.Outputs[7] = self.ids.Output8
         
+        self.Results[0] = self.ids.Result1
+        self.Results[1] = self.ids.Result2
+        self.Results[2] = self.ids.Result3
+        self.Results[3] = self.ids.Result4
+        self.Results[4] = self.ids.Result5
+        self.Results[5] = self.ids.Result6
+        self.Results[6] = self.ids.Result7
+        self.Results[7] = self.ids.Result8
+        
         for i in range(0,8):            
             if self.Outputs[i].text != "Not Selected |":
                 self.Outputs[i].color = (0,0,0,1)
             
+                    
+                
+                
+            
         print("on pre enter for results has been entered")
     
-    def updateOutputs(self, results):
+    def updateOutputs(self, outputs):
+        for i in range(0, 8):                 
+            if outputs[i] != "Not Selected":                
+                self.Outputs[i].text = outputs[i] + ' @ FTM Input ' + str(i+1) + ' |' 
+    
+    def updateResults(self, results):
         for i in range(0, 8):                 
             if results[i] != "Not Selected":                
-                self.Outputs[i].text = results[i] + ' @ FTM Input ' + str(i+1) + ' |' 
+                self.Results[i].text = results[i]                 
+                if self.Results[i].text == "Pass":                    
+                    self.Results[i].color = (0.0000, 0.5019, 0.0000, 1)
+                else:
+                    self.Results[i].color = (0.8157, 0.0000, 0.0000, 1)
+                
             
     
 
@@ -91,24 +114,10 @@ class SPINRECTANGLE2(Widget):
             item.angle = 0
 
 class RESULTSSTORAGE():    
-    data1 = str()
-    data2 = str()
-    data3 = str()
-    data4 = str()
-    data5 = str()
-    data6 = str()
-    data7 = str()
-    data8 = str()
-    def __init__(self):
-        self.data1 = "Default Data"
-        self.data2 = "Default Data"
-        self.data3 = "Default Data"
-        self.data4 = "Default Data"
-        self.data5 = "Default Data"
-        self.data6 = "Default Data"
-        self.data7 = "Default Data"
-        self.data8 = "Default Data"
-        
+    Data = ["Default data"] * 8
+    Pass = ["Not Selected"] * 8    
+    
+    
             
 
 class COLORS():
@@ -126,18 +135,26 @@ class TESTERGUI(App):
     #Data used in the .kv files for color and other uses
     colors = COLORS()
     results = RESULTSSTORAGE()  
+    
       
     INPUTS = ('GMA Output 1', 'GMA Output 2', 'GMA Output 3', 'GMA Output 4', 'GMA Output 5', 'GMA Output 6', 'GMA Output 7', 'GMA Output 8')
     Thresholds = [""] * 8
     OutputsSelected = ["Not Selected"] * 8
+    
    
    
     def wasteTime(self):
         
         thistime = time.time()         
-        '''while thistime + 5 > time.time(): # 5 seconds
-            time.sleep(1)'''
-       
+        while thistime + 5 > time.time(): # 5 seconds
+            time.sleep(1)
+        for i in range(0,8):
+            if self.OutputsSelected[i] != "Not Selected": 
+                if random.randint(-2,2) > 0:
+                    self.results.Pass[i] = "Pass"
+                else:
+                    self.results.Pass[i] = "Fail"   
+        self.sm.get_screen('results').updateResults(self.results.Pass)
         print("time wasting done")              
         self.pop_up.dismiss()           
     
