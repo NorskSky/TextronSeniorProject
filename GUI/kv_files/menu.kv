@@ -1,5 +1,5 @@
 #:kivy 2.3.0
-#:import os os
+
 
 
 <MainWindowButton@Button>:
@@ -73,7 +73,7 @@
             text: "Power Off"
             background_color: app.colors.ENGORANGE
             
-            on_press: os.system("shutdown -h now") 
+            on_press: app.shutdown()
             Image:
                 source: './GUI_Icons/Power_icon.png'
                 y: self.parent.y + 20       

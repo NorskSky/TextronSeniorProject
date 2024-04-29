@@ -1,5 +1,5 @@
 import kivy
-import threading, time, random
+import threading, time, random, os
 #from pathlib import Path, PurePath
 
 #Loads the config file
@@ -210,7 +210,9 @@ class TESTERGUI(App):
             
         self.sm.get_screen('results').updateOutputs(self.OutputsSelected)
         self.sm.current = 'menu'
-        
+   
+    def shutdown(self):
+        os.system("shutdown -h now")          
     def build(self):          
         self.sm.add_widget(MENUSCREEN(name = 'menu'))   
         self.sm.add_widget(SETTINGSSCREEN(name = 'settings'))     
