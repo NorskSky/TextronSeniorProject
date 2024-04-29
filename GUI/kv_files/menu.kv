@@ -72,8 +72,8 @@
             id: pwrBt
             text: "Power Off"
             background_color: app.colors.ENGORANGE
-            #commented out to prevent acidental shut downs while testing
-            #on_press: os.system("shutdown /s /t 1") 
+            
+            on_press: os.system("shutdown -h now") 
             Image:
                 source: './GUI_Icons/Power_icon.png'
                 y: self.parent.y + 20       
