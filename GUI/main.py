@@ -27,6 +27,10 @@ Builder.load_file("kv_files/loading.kv")
 Builder.load_file("kv_files/results.kv")
 
 class MENUSCREEN(Screen):
+    
+    def shutdown(self):
+        if self.ids.pwrbt.collide_point(self.ids.pwrbt.touch.pos):
+            os.system("shutdown -h now")              
     pass
 
 
