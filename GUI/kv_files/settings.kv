@@ -1,0 +1,148 @@
+#:kivy 2.3.0
+#:import os os
+
+
+<InputSelction@Spinner>: 
+    size_hint: None, None
+    size: 100, 44  
+    values: app.INPUTS
+    on_text: print("The spinner {} has text {}".format(self, self.text))
+    text: "Not Selected"
+    
+
+<ThresholdInput@TextInput>:
+    multiline: False
+    hint_text:'Enter Desired Pass Value'    
+    size_hint: None, None
+    size: 180, 44
+    input_filter: 'float'
+    release: print("test")
+
+<SETTINGSSCREEN>:     
+    FloatLayout:        
+        cols: 10
+        rows: 10
+        #Sets screen background color
+        canvas:
+            Color: 
+                rgba: app.colors.STEELBLUE
+            Rectangle: 
+                size: 800, 480        
+            
+        #Defines back button look and behavior
+        #Sends user back to Main menu
+        Button:
+            text: "Back"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: app.colors.ENGORANGE
+            size_hint: 0.30, 0.125
+            pos: 10, 10
+            
+            on_release: app.sm.current = 'menu'
+        
+        #Defines save button looks and behavior.
+        #Saves user defined thresholds for each 
+        #input to be tested and which inputs are 
+        #to be tested
+        Button:
+            text: "Save"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: app.colors.PINEGREEN
+            size_hint: 0.30, 0.125
+            pos: 550, 10
+            
+            on_release: app.save()
+        
+        #Defines import button looks and behavior.
+        #Allows user to use a known working GMA36 to
+        #to set thesholds for next test.  
+        #DOES NOT SET INPUTS
+        Button:
+            text: "Import"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: app.colors.SELYELLOW
+            size_hint: 0.30, 0.125
+            pos: 280, 10
+            
+            on_release: app.sm.current = 'menu'
+
+        Spinner:                       
+            id: dropdown_9
+            size_hint: None, None
+            size: 100, 44  
+            values: ('GMA Input 1', 'GMA Input 2', 'GMA Input 3', 'GMA Input 4')
+            text: 'GMA Input 1'
+            on_text: print("The spinner {} has text {}".format(self, self.text))
+            pos: 10, 156 
+
+        InputSelction:                       
+            id: dropdown_1
+            pos: 10, 426
+            
+
+        InputSelction:                       
+            id: dropdown_2
+            pos: 10, 372
+            
+
+        InputSelction:                       
+            id: dropdown_3
+            pos: 10, 318
+            
+
+        InputSelction:                       
+            id: dropdown_4
+            pos: 10, 264
+             
+
+        InputSelction:                       
+            id: dropdown_5
+            pos: 420, 426
+            
+
+        InputSelction:                       
+            id: dropdown_6
+            pos: 420, 372
+            
+
+        InputSelction:                       
+            id: dropdown_7
+            pos: 420, 318
+            
+
+        InputSelction:                       
+            id: dropdown_8
+            pos: 420, 264
+               
+
+        ThresholdInput:   
+            id: thresholdInput_1
+            pos: 120, 426
+        ThresholdInput:   
+            id: thresholdInput_2
+            pos: 120, 372     
+        ThresholdInput:   
+            id: thresholdInput_3
+            pos: 120, 318    
+        ThresholdInput:   
+            id: thresholdInput_4
+            pos: 120, 264     
+        ThresholdInput:   
+            id: thresholdInput_5
+            pos: 530, 426     
+        ThresholdInput:   
+            id: thresholdInput_6
+            pos: 530, 372     
+        ThresholdInput:   
+            id: thresholdInput_7
+            pos: 530, 318     
+        ThresholdInput:   
+            id: thresholdInput_8
+            pos: 530, 264  
+        
