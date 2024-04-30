@@ -1,0 +1,56 @@
+#:kivy 2.3.0
+
+<LOADING>:
+    pop_up_text: 'Doing things'
+    size_hint: .5, .5
+    auto_dismiss: False
+    title: 'Status'
+    RelativeLayout:        
+        canvas.before:
+            Color: 
+                rgba: app.colors.STEELBLUE
+            Rectangle:                 
+                size: 400, 240     
+            
+        SPINRECTANGLE:
+            pos: 150, 75                  
+            canvas.before:                                                                                                                                                         
+                PushMatrix                                                                                                                                                   
+                Rotate:                                                                                                                                          
+                    angle: self.angle   
+                    axis: (0, 0, 1)                                                                                                                
+                    origin: self.x + 50 , self.y + 50
+            canvas.after:                                                                                                                                              
+                PopMatrix   
+
+        SPINRECTANGLE2:
+            pos: 170, 95           
+            canvas.before:                                                                                                                                                            
+                PushMatrix                                                                                                                                                   
+                Rotate:                                                                                                                                          
+                    angle: self.angle   
+                    axis: (0, 0, 1)                                                                                                                
+                    origin: self.x + 30, self.y + 30
+            canvas.after:                                                                                                                                              
+                PopMatrix
+
+            
+            
+        
+<SPINRECTANGLE>:   
+    canvas:
+        Color:
+            rgba: app.colors.ENGORANGE                  
+        Rectangle: 
+            pos: self.pos
+            size: 100, 100    
+
+<SPINRECTANGLE2>:   
+    canvas: 
+        Color:
+            rgba: app.colors.STEELBLUE               
+        Rectangle: 
+            pos: self.pos
+            size: 60, 60    
+    
+

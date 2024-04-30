@@ -1,13 +1,243 @@
-#:kivy 3.12.1
+#:kivy 2.3.0
+#:import os os
+#:set STEELBLUE (0.2471, 0.5333, 0.7726, 1)
+#:set PINEGREEN (0.0745, 0.4353, 0.3882, 1)
+#:set ENGORANGE (0.8157, 0.0000, 0.0000, 1)
+#:set SELYELLOW (1.0000, 0.7294, 0.0314, 1)
+#:set PRUSSBLUE (0.0118, 0.1686, 0.2627, 1)
+#:set INPUTS ('GMA Output 1', 'GMA Output 2', 'GMA Output 3', 'GMA Output 4', 'GMA Output 5', 'GMA Output 6', 'GMA Output 7', 'GMA Outputt 8')
 
-<MAINWINDOW>:
-    canvas:
-        Rectangle:
-        pos: self.center_x -, 0
-        size: 10, self.height
-    Label:
-        font_size: 70
-        font_style: "ariel"
-        center_x: root.width / 4
-        top: root.top - 50
-        text: "Hello World" 
+
+<InputSelction@Spinner>: 
+    size_hint: None, None
+    size: 100, 44  
+    values: INPUTS
+    on_text: print("The spinner {} has text {}".format(self, self.text))
+
+<ThreshHoldInput@TextInput>:
+    multiline: False
+    hint_text:'Enter Pass Threshold'    
+    size_hint: None, None
+    size: 150, 44
+    input_filter: 'float'
+    
+
+        
+<MainWindowButton@Button>:
+    font_size: 18
+    font_style: 'ariel' 
+    background_normal: ''
+    
+   
+<MENUSCREEN>: 
+    #makes the background color the proper shade
+    GridLayout:
+        cols: 2
+        rows: 2
+        padding: 10, 10
+        spacing: 10, 10 
+        canvas:
+            Color: 
+                rgba: STEELBLUE
+            Rectangle: 
+                size: 800, 480
+        
+        
+        #Defines the start button look and Behavior
+        MainWindowButton:
+            id: startBt
+            text: "Start Test"
+            background_color: PINEGREEN
+            on_press: app.startTest("Start Test Pressed") #print("start test")
+            Image:
+                source: './GUI_Icons/Test_icon.png'
+                y: self.parent.y + 20       
+                x: self.parent.x + 100
+                fit_mode: "fill"
+                size: 185, 185           
+                color: 0.0745, 0.4353, 0.3882, 0.2500       
+            
+                
+        #Defines the export button look and Behavior   
+        MainWindowButton:
+            id: exportBt
+            text: "Export"
+            background_color: SELYELLOW
+            on_press: app.export("Export Pressed")
+            Image:
+                source: './GUI_Icons/Export_icon.png'
+                y: self.parent.y + 20       
+                x: self.parent.x + 100
+                fit_mode: "fill"
+                size: 185, 185           
+                color: 1.0000, 0.7294, 0.0314, 0.2500
+
+        #Defines Test Settings button look and Behavior
+        #Sends user back to Settings Screen
+        MainWindowButton:
+            id: testStBt
+            text: "Test Settings"
+            on_press: app.sm.current = 'settings'
+            background_color: PRUSSBLUE
+            Image:
+                source: './GUI_Icons/Test_settings_icon.png'
+                y: self.parent.y + 20       
+                x: self.parent.x + 100
+                fit_mode: "fill"
+                size: 185, 185           
+                color: 0.0118, 0.1686, 0.2627, 0.2500
+       
+        #Defines Power button look and Behavior
+        #Powers down the device
+        MainWindowButton:
+            id: pwrBt
+            text: "Power Off"
+            background_color: ENGORANGE
+            #commented out to prevent acidental shut downs while testing
+            #on_press: os.system("shutdown /s /t 1") 
+            Image:
+                source: './GUI_Icons/Power_icon.png'
+                y: self.parent.y + 20       
+                x: self.parent.x + 100
+                fit_mode: "fill"
+                size: 185, 185           
+                color: 0.8157, 0.0000, 0.0000, 0.2500
+<SETTINGSSCREEN>:
+    FloatLayout:        
+        cols: 10
+        rows: 10
+        #Sets screen bakcground color
+        canvas:
+            Color: 
+                rgba: STEELBLUE
+            Rectangle: 
+                size: 800, 480        
+            
+        #Defines back button look and behavior
+        #Sends user back to Main menu
+        Button:
+            text: "Back"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: ENGORANGE
+            size_hint: 0.30, 0.125
+            pos: 10, 10
+            
+            on_press: app.sm.current = 'menu'
+        
+        #Defines save button looks and behavior.
+        #Saves user defined thresholds for each 
+        #input to be tested and which inputs are 
+        #to be tested
+        Button:
+            text: "Save"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: PINEGREEN
+            size_hint: 0.30, 0.125
+            pos: 550, 10
+            
+            on_press: app.sm.current = 'menu'
+        
+        #Defines import button looks and behavior.
+        #Allows user to use a known working GMA36 to
+        #to set thesholds for next test.  
+        #DOES NOT SET INPUTS
+        Button:
+            text: "Import"
+            font_size: 18
+            font_style: 'ariel'
+            background_normal: ''           
+            background_color: SELYELLOW
+            size_hint: 0.30, 0.125
+            pos: 280, 10
+            
+            on_press: app.sm.current = 'menu'
+
+        Spinner:                       
+            id: dropdown_9
+            size_hint: None, None
+            size: 100, 44  
+            values: ('GMA Input 1', 'GMA Input 2', 'GMA Input 3', 'GMA Input 4')
+            text: 'GMA Input 1'
+            on_text: print("The spinner {} has text {}".format(self, self.text))
+            pos: 10, 156 
+
+        InputSelction:                       
+            id: dropdown_1
+            pos: 10, 426
+            text: 'GMA Output 1' 
+
+        InputSelction:                       
+            id: dropdown_2
+            pos: 10, 372
+            text: 'GMA Output 2'
+
+        InputSelction:                       
+            id: dropdown_3
+            pos: 10, 318
+            text: 'GMA Output 3' 
+
+        InputSelction:                       
+            id: dropdown_4
+            pos: 10, 264
+            text: 'GMA Output 4' 
+
+        InputSelction:                       
+            id: dropdown_5
+            pos: 420, 426
+            text: 'GMA Output 5'
+
+        InputSelction:                       
+            id: dropdown_6
+            pos: 420, 372
+            text: 'GMA Output 6' 
+
+        InputSelction:                       
+            id: dropdown_7
+            pos: 420, 318
+            text: 'GMA Output 7' 
+
+        InputSelction:                       
+            id: dropdown_8
+            pos: 420, 264
+            text: 'GMA Output 8'    
+
+        ThreshHoldInput:   
+            id: threshHoldInput_1
+            pos: 120, 426
+        ThreshHoldInput:   
+            id: threshHoldInput_2
+            pos: 120, 372     
+        ThreshHoldInput:   
+            id: threshHoldInput_3
+            pos: 120, 318    
+        ThreshHoldInput:   
+            id: threshHoldInput_4
+            pos: 120, 264     
+        ThreshHoldInput:   
+            id: threshHoldInput_5
+            pos: 530, 426     
+        ThreshHoldInput:   
+            id: threshHoldInput_6
+            pos: 530, 372     
+        ThreshHoldInput:   
+            id: threshHoldInput_7
+            pos: 530, 318     
+        ThreshHoldInput:   
+            id: threshHoldInput_8
+            pos: 530, 264          
+            
+        
+        
+             
+        
+
+
+
+
+
+    
+    
