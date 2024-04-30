@@ -1,11 +1,12 @@
 import kivy
 import threading, time, random, os
-#from pathlib import Path, PurePath
+
 
 #Loads the config file
 from kivy.config import Config
 Config.read("screen_config.cfg")
 
+#GUI specific Imports
 from kivy.app import App
 from kivy.lang.builder import Builder
 from kivy.config import Config
@@ -18,14 +19,167 @@ from kivy.uix.popup import Popup
 from kivy.factory import Factory
 from kivy.properties import ObjectProperty
 
-#Builder.load_file("tester.kv")
 
+#Analysis specific imports
+from pydub import AudioSegment
+from pydub.playback import play
+#import ADS1256
+#import RPi.GPIO as GPIO
+#import errorHandler
+import pandas as pd
+#from time import time, sleep, perf_counter
+
+class RESULTSSTORAGE():    
+    Data = ["Default data"] * 8
+    Pass = ["Not Selected"] * 8   
+     
+class ANALYSIS():    
+    #Select input of GMA to be tested
+    GMAinputData = pd.DataFrame()
+    #Load baseline Min and Max values, correlating to the GMA input
+    GMAoutputs_Thresholds = dict()
+    adc_channels = dict()
+    GMAOutMax = dict() 
+    GMAOutMin = dict()
+    
+    Results = RESULTSSTORAGE()
+    
+    def digitGrab(self, string):
+        numList = list()
+        for i in string:
+            if i.isdigit():
+                numList.append(i)
+        return "".join(numList)
+    
+    def GMAInputSelection(self, gmaInputSelected):        
+        
+            
+        baselineData = pd.read_csv(f'baselineCapture/baselineCSV/{gmaInputSelected}.csv')
+        return baselineData
+        #print(baselineData.to_string(index=False))
+
+    def GMAOutputSelection(self, baselineData, gmaOuts):
+        gmaOutSelected = list()
+        for i in gmaOuts:
+            gmaOutSelected = self.digitGrab(i)
+        gmaOutputDict = dict()
+        for output in gmaOutSelected:
+            gmaOutputDict[output] = (float(baselineData.at[output-1,"Min"]),float(baselineData.at[output-1,"Max"]))
+        return gmaOutputDict
+
+    def ADC_Channels(self, gmaOutputDict):
+        ADC_channels = dict()
+        for output in gmaOutputDict.keys():
+            ADC_channels[int(input('GMA Output {} plugged into which FTM Channel? '.format(output)))] = output
+        return ADC_channels
+    
+    
+    #define linear sweep function
+    def LinearSweep(self):
+        with errorHandler.noalsaerr():
+            linSweepMp3 = AudioSegment.from_mp3("sinesweep/16Hz-20kHz-Lin-CA-10sec.mp3")
+            print('Starting Linear Sine Sweep Audio on Outputs 1 & 2')
+            play(linSweepMp3)
+            sleep(1)
+            print('Linear Sweep Complete')
+
+    #define exponential sweep function    
+    def ExponentialSweep(self):
+        expSweepMp3 = AudioSegment.from_mp3("sinesweep/16Hz-20kHz-Exp-CA-10sec.mp3")
+        print('Starting Exponential Sine Sweep Audio on Outputs 1 & 2')
+        play(expSweepMp3)
+        time.sleep(1)
+        print('Exponential Sweep Complete')
+        
+    #define ADC Min/Max Capture Function
+    def ADCRead(self, duration):
+        print('starting ADC reads')
+        t_end = time() + duration
+        i = 0
+        try:
+            ADC = ADS1256.ADS1256()
+            ADC.ADS1256_init()
+            time.sleep(0.1) 
+
+            while time() < t_end:
+                ADC_Value = ADC.ADS1256_GetAll()
+                for i in self.adc_channels.keys():
+                    if (ADC_Value[i]*5.0/0x7fffff) > self.GMAOutMax[i]:
+                        self.GMAOutMax[i] = (ADC_Value[i]*5.0/0x7fffff)
+                    if (ADC_Value[i]*5.0/0x7fffff) < self.GMAOutMin[i]:
+                        self.GMAOutMin[i] = (ADC_Value[i]*5.0/0x7fffff)
+                    i+=1
+                
+        except :
+            GPIO.cleanup()
+            print ("\r\nProgram end     ")
+            #exit()
+        print('Done with ADC Reads')
+
+    
+    def runAnalysis(self, gmaInput, testType, gmaOutputs):
+        #Select input of GMA to be tested
+        self.GMAinputData = self.GMAInputSelection(gmaInput)
+        #Load baseline Min and Max values, correlating to the GMA input
+        self.GMAoutputs_Thresholds = self.GMAOutputSelection(self.GMAinputData, gmaOutputs)
+        self.adc_channels = self.ADC_Channels(self.GMAoutputs_Thresholds)        
+
+    
+        
+        for ch in self.adc_channels.keys():
+            self.GMAOutMax[ch] = 0
+            self.GMAOutMin[ch] = 5
+            
+        # create two new threads
+        if testType == 'L':
+            linSweepMp3 = AudioSegment.from_mp3("sinesweep/16Hz-20kHz-Lin-CA-10sec.mp3")
+            duration = int(linSweepMp3.duration_seconds)
+            t1 = threading.Thread(target=self.LinearSweep)
+        if testType == 'E':
+            expSweepMp3 = AudioSegment.from_mp3("sinesweep/16Hz-20kHz-Exp-CA-10sec.mp3")
+            duration = int(expSweepMp3.duration_seconds)
+            t1 = threading.Thread(target=self.ExponentialSweep)
+        t2 = threading.Thread(target=self.ADCRead, args=(duration))
+
+        # start the threads
+        t1.start()
+        t2.start()
+
+        # wait for the threads to complete
+        t1.join()
+        t2.join()
+        x = 0
+        
+        for i in self.adc_channels.keys():
+            measured_min = self.GMAOutMin[i]
+            measured_max = self.GMAOutMax[i]
+            GMA_acceptable_range = self.GMAoutputs_Thresholds[self.adc_channels[i]]
+            if measured_min < GMA_acceptable_range[0]:
+                print('GMA Output {} Failed: Measured {} below {} threshold'.format(self.adc_channels[i],measured_min,GMA_acceptable_range))
+                self.Results.Data[x] = "-" + measured_min
+                self.Results.Pass[x] = "Fail"
+            elif measured_max > GMA_acceptable_range[1]:
+                print('GMA Output {} Failed: Measured {} above {} threshold'.format(self.adc_channels[i],measured_max,GMA_acceptable_range))
+                self.Results.Data[x] = "-" + measured_max
+                self.Results.Pass[x] = "Fail"
+            else:
+                print('GMA Output {} Passed!'.format(self.adc_channels[i]))
+                self.Results.Data[x] = "Within Threshold"
+                self.Results.Pass[x] = "Pass" 
+            x += 1
+        return
+    #print(f'ADC Read Complete')
+
+
+
+
+#======================================================================================================================
+#=====================================GUI CODE=========================================================================
 #Loads the kv files, that dictate look, feel, and behavior of the GUI 
 Builder.load_file("kv_files/menu.kv")
 Builder.load_file("kv_files/settings.kv")
 Builder.load_file("kv_files/loading.kv")
 Builder.load_file("kv_files/results.kv")
-
 class MENUSCREEN(Screen):
     
     def shutdown(self):            
@@ -116,10 +270,7 @@ class SPINRECTANGLE2(Widget):
         if angle == -360:
             item.angle = 0
 
-class RESULTSSTORAGE():    
-    Data = ["Default data"] * 8
-    Pass = ["Not Selected"] * 8    
-    
+
     
             
 
@@ -137,27 +288,47 @@ class TESTERGUI(App):
     sm = ScreenManager()
     #Data used in the .kv files for color and other uses
     colors = COLORS()
-    results = RESULTSSTORAGE()  
-    
+    #results = RESULTSSTORAGE()
+    analysis = ANALYSIS()
       
-    INPUTS = ('GMA Output 1', 'GMA Output 2', 'GMA Output 3', 'GMA Output 4', 'GMA Output 5', 'GMA Output 6', 'GMA Output 7', 'GMA Output 8')
+    
+    
+    GMAInputs = ('GMA Input 1', 'GMA Input 2', 'GMA Input 3', 'GMA Input 4', 'GMA Input 5', 'GMA Input 6', 
+                'GMA Input 7', 'GMA Input 8', 'GMA Input 9', 'GMA Input 10', 'GMA Input 11', 'GMA Input 12', 
+                'GMA Input 13', 'GMA Input 14', 'GMA Input 15', 'GMA Input 16', 'GMA Input 17', 'GMA Input 18', 
+                'GMA Input 19', 'GMA Input 20', 'GMA Input 21', 'GMA Input 22', 'GMA Input 23', 'GMA Input 24', 
+                'GMA Input 25', 'GMA Input 26', 'GMA Input 27', 'GMA Input 28', 'GMA Input 29', 'GMA Input 30', 
+                'GMA Input 31', 'GMA Input 32', 'GMA Input 33', 'GMA Input 34', 'GMA Input 35', 'GMA Input 36', 
+                'GMA Input 37', 'GMA Input 38', 'GMA Input 39', 'GMA Input 40', 'GMA Input 41', 'GMA Input 42', 
+                'GMA Input 43', 'GMA Input 44', 'GMA Input 45', 'GMA Input 46', 'GMA Input 47', 'GMA Input 48',
+                'GMA Input 49', 'GMA Input 50', 'GMA Input 51', 'GMA Input 52' ,'GMA Input 53', 'GMA Input 54',
+                'GMA Input 54', 'GMA Input 56', 'GMA Input 57', 'GMA Input 58' ,'GMA Input 59', 'GMA Input 60',  
+                'GMA Input 61', 'GMA Input 62', 'GMA Input 63', 'GMA Input 64')
+ 
+    GMAOutputs = ('GMA Output 1', 'GMA Output 2', 'GMA Output 3', 'GMA Output 4', 'GMA Output 5', 'GMA Output 6', 
+                  'GMA Output 7', 'GMA Output 8', 'GMA Output 9', 'GMA Output 10', 'GMA Output 11', 'GMA Output 12',
+                  'GMA Output 13', 'GMA Output 14', 'GMA Output 15', 'GMA Output 16', 'GMA Output 17', 'GMA Output 18',
+                  'GMA Output 19', 'GMA Output 20', 'GMA Output 21', 'GMA Output 22', 'GMA Output 23', 'GMA Output 24',
+                  'GMA Output 25', 'GMA Output 26', 'GMA Output 27', 'GMA Output 28', 'GMA Output 29', 'GMA Output 30',
+                  'GMA Output 31')
+    
     Thresholds = [""] * 8
     OutputsSelected = ["Not Selected"] * 8
-    
+    GMAInputSelected = ""
    
+    def digitGrab(self, string):
+        numList = list()
+        for i in string:
+            if i.isdigit():
+                numList.append(i)
+        return "".join(numList)
    
-    def wasteTime(self):
+    def loadResults(self):
         
         thistime = time.time()         
         while thistime + 5 > time.time(): # 5 seconds
-            time.sleep(1)
-        for i in range(0,8):
-            if self.OutputsSelected[i] != "Not Selected": 
-                if random.randint(-2,2) > 0:
-                    self.results.Pass[i] = "Pass"
-                else:
-                    self.results.Pass[i] = "Fail"   
-        self.sm.get_screen('results').updateResults(self.results.Pass)
+            time.sleep(1)       
+        self.sm.get_screen('results').updateResults(self.analysis.Results.Pass)
         print("time wasting done")              
         self.pop_up.dismiss()           
     
@@ -173,8 +344,10 @@ class TESTERGUI(App):
         print(text)
         self.showLoading()       
         
-        mythread = threading.Thread(target=self.wasteTime)
+        mythread = threading.Thread(target=self.analysis.runAnalysis, args=(self.GMAInputSelected, "L", self.OutputsSelected))
+        mythread2 = threading.Thread(target=self.loadResults)
         mythread.start()  
+        mythread2.start()
         self.sm.current = 'results' 
         
         
@@ -208,6 +381,9 @@ class TESTERGUI(App):
         self.OutputsSelected[6] = (self.sm.current_screen.ids.dropdown_7.text)
         self.OutputsSelected[7] = (self.sm.current_screen.ids.dropdown_8.text)         
         
+        #grabs the GMA input
+        self.GMAInputSelected = self.digitGrab(self.sm.current_screen.ids.dropdown_9.text)
+        print(self.GMAInputSelected)
         #Updates the result screen with the correct data 
         self.sm.current = 'results'
             
@@ -220,6 +396,6 @@ class TESTERGUI(App):
         self.sm.add_widget(SETTINGSSCREEN(name = 'settings'))     
         self.sm.add_widget(RESULTSSCREEN(name = 'results'))    
         return self.sm
-    
+#running code   
 if __name__ == '__main__':
     TESTERGUI().run()

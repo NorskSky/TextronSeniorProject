@@ -2,10 +2,10 @@
 #:import os os
 
 
-<InputSelction@Spinner>: 
+<InputSelction@Spinner>:
     size_hint: None, None
     size: 100, 44  
-    values: app.INPUTS
+    values: app.GMAOutputs
     on_text: print("The spinner {} has text {}".format(self, self.text))
     text: "Not Selected"
     
@@ -76,7 +76,7 @@
             id: dropdown_9
             size_hint: None, None
             size: 100, 44  
-            values: ('GMA Input 1', 'GMA Input 2', 'GMA Input 3', 'GMA Input 4')
+            values: app.GMAInputs
             text: 'GMA Input 1'
             on_text: print("The spinner {} has text {}".format(self, self.text))
             pos: 10, 156 
