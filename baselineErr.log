@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/textron/gma-ftm/TextronSeniorProject/baselineCapture/baseline.py", line 82, in <module>
+    t1.join()
+  File "/usr/lib/python3.11/threading.py", line 1112, in join
+    self._wait_for_tstate_lock()
+  File "/usr/lib/python3.11/threading.py", line 1132, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Exception ignored in: <module 'threading' from '/usr/lib/python3.11/threading.py'>
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/threading.py", line 1583, in _shutdown
+    lock.acquire()
+KeyboardInterrupt: 
