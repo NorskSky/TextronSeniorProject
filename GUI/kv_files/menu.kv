@@ -27,7 +27,7 @@
             id: startBt
             text: "Start Test"
             background_color: app.colors.PINEGREEN
-            on_press: app.startTest("Start Test Pressed") #print("start test")
+            on_release: app.startTest("Start Test Pressed") #print("start test")
             Image:
                 source: './GUI_Icons/Test_icon.png'
                 y: self.parent.y + 20       
@@ -42,7 +42,7 @@
             id: exportBt
             text: "Export"
             background_color: app.colors.SELYELLOW
-            on_press: app.export("Export Pressed")
+            on_release: app.export("Export Pressed")
             Image:
                 source: './GUI_Icons/Export_icon.png'
                 y: self.parent.y + 20       
@@ -56,7 +56,7 @@
         MainWindowButton:
             id: testStBt
             text: "Test Settings"
-            on_press: app.sm.current = 'settings'
+            on_release: app.sm.current = 'settings'
             background_color: app.colors.PRUSSBLUE
             Image:
                 source: './GUI_Icons/Test_settings_icon.png'
@@ -73,7 +73,7 @@
             text: "Power Off"
             background_color: app.colors.ENGORANGE
             
-            on_press: root.shutdown()
+            on_release: root.shutdown()
             Image:
                 source: './GUI_Icons/Power_icon.png'
                 y: self.parent.y + 20       

@@ -40,7 +40,7 @@
             size_hint: 0.30, 0.125
             pos: 10, 10
             
-            on_press: app.sm.current = 'menu'
+            on_release: app.sm.current = 'menu'
         
         #Defines save button looks and behavior.
         #Saves user defined thresholds for each 
@@ -55,7 +55,7 @@
             size_hint: 0.30, 0.125
             pos: 550, 10
             
-            on_press: app.save()
+            on_release: app.save()
         
         #Defines import button looks and behavior.
         #Allows user to use a known working GMA36 to
@@ -70,7 +70,7 @@
             size_hint: 0.30, 0.125
             pos: 280, 10
             
-            on_press: app.sm.current = 'menu'
+            on_release: app.sm.current = 'menu'
 
         Spinner:                       
             id: dropdown_9

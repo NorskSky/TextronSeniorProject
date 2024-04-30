@@ -46,7 +46,7 @@
             size_hint: 0.30, 0.125
             pos: 10, 10
             
-            on_press: app.sm.current = 'menu'
+            on_release: app.sm.current = 'menu'
         
         #Defines save button looks and behavior.
         #Saves user defined thresholds for each 
@@ -61,7 +61,7 @@
             size_hint: 0.30, 0.125
             pos: 550, 10
             
-            on_press: print("saved results")
+            on_release: print("saved results")
         
         OutputTested: 
             id:Output1
