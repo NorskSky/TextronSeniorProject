@@ -29,8 +29,8 @@ Builder.load_file("kv_files/results.kv")
 class MENUSCREEN(Screen):
     
     def shutdown(self):
-        #if self.ids.pwrBt.collide_point(self.t)        
-        os.system("shutdown -h now")              
+        if self.ids.pwrBt.collide_point(self.ids.pwrBt.x, self.ids.pwrBt.y):       
+            os.system("shutdown -h now")              
     pass
 
 
@@ -171,12 +171,13 @@ class TESTERGUI(App):
     #Defines the Behavior when the Start Test button is pressed
     #This button is located with in the 'menu' screen
     def startTest(self, text):
-        print(text)        
-        self.showLoading()       
+        print(text)
+        if self.sm.get_screen('menu').ids.testStBt.collide_point(self.get_screen('menu').ids.testStBt.x, self.get_screen('menu').ids.testStBt.y):          
+            self.showLoading()       
         
-        mythread = threading.Thread(target=self.wasteTime)
-        mythread.start()  
-        self.sm.current = 'results' 
+            mythread = threading.Thread(target=self.wasteTime)
+            mythread.start()  
+            self.sm.current = 'results' 
         
         
     
